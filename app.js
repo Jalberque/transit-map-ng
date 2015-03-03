@@ -1,7 +1,8 @@
 'use strict';
 angular.module('transitMap', {
   setup: function() {
-    // setup for module name 
+    // setup for module name
+    
   },
   teardown: function() {
     //teardown for module name
@@ -168,7 +169,7 @@ angular.module('transitMap', {
 					getVehicles(id);
 					$interval(function () {
 						getVehicles(id);
-					}, 1000);
+					}, 5000);
 				});
 			}
 			function getVehicles (id) {
@@ -234,14 +235,12 @@ angular.module('transitMap', {
 }).directive('transitSchedule', function () {
 	return {
 		restrict: 'E',
-		template: '<div id="schedule"><input class="transitInput" placeholder="Filter by stop name..." ng-model="transitSearch"></input><h1>Estimated Arrival Times</h1><span ng-show="vehicles.length === 0">No buses currently running on this route</span><div ng-repeat="vehicle in vehicles | orderBy: ' + "'call_name'" + '" ng-model="vehicle"><h2 ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</h2><span ng-show="vehicle.arrival_estimates.length === 0">Bus not currently running</span><ul><li ng-class="{red: estimate.time <= 5, yellow: estimate.time <= 10 && estimate.time > 5}" ng-repeat="estimate in vehicle.arrival_estimates | filter:{stop_name: transitSearch} | filter: estimateFilter | orderBy: ' + "'time'" + '" ng-model="stop" ng-click="stopClick(estimate.location)" ng-mouseover="stopOver(estimate)" ng-mouseleave="stopLeave()">{{estimate.stop_name}} ({{estimate.minsec}})</li></ul></div></div>',
-		controller: function ($scope, $rootScope, $location, $anchorScroll) {
+		template: '<div id="schedule"><input class="transitInput" placeholder="Filter by stop name..." ng-model="transitSearch"></input><h4>Estimated Arrival Times</h4><em ng-show="vehicles.length === 0">No buses currently running on this route</em><div ng-repeat="vehicle in vehicles | orderBy: ' + "'call_name'" + '" ng-model="vehicle"><strong ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</strong><em ng-show="vehicle.arrival_estimates.length === 0">Bus not currently running</em><ul><li ng-class="{red: estimate.time <= 5, yellow: estimate.time <= 10 && estimate.time > 5}" ng-repeat="estimate in vehicle.arrival_estimates | filter:{stop_name: transitSearch} | filter: estimateFilter | orderBy: ' + "'time'" + '" ng-model="stop" ng-click="stopClick(estimate.location)" ng-mouseover="stopOver(estimate)" ng-mouseleave="stopLeave()">{{estimate.stop_name}} ({{estimate.minsec}})</li></ul></div></div>',
+		controller: function ($scope, $rootScope, $location) {
 			$scope.transitSearch = "";
 			$scope.over = false;
 			$scope.stopClick = function (location) {
 				$rootScope.map.setView([location.lat, location.lng], 16);
-				$location.hash('map');
-				$anchorScroll();
 			}
 			$scope.stopOver = function (stop) {
 				if (!$scope.over) {
