@@ -101,9 +101,14 @@ angular.module('transitMap', {
 			$rootScope.map = map;
 			initMap(map);
 			getRoute();
+
+
 			function initMap (map) {
-				L.tileLayer('http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png', {
-					attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				var hour = new Date().getHours();
+				console.log(hour);
+				var baseUrl = 'http://{s}.basemaps.cartocdn.com/' + ((hour > 17 || hour < 6) ? 'dark' : 'light') + '_all/{z}/{x}/{y}.png';
+				L.tileLayer(baseUrl,{
+  					attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 					subdomains: 'abcd',
 					minZoom: 4,
 					maxZoom: 16
