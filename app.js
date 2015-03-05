@@ -94,7 +94,7 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 			initMap(map);
 			getRoute();
 			function initMap (map) {
-				var hour = new Date().getHours() -5;
+				var hour = new Date().getHours();
 				console.log(hour);
 				var baseUrl = 'http://{s}.basemaps.cartocdn.com/' + ((hour > 17 || hour < 6) ? 'dark' : 'light') + '_all/{z}/{x}/{y}.png';
 				L.tileLayer(baseUrl,{
