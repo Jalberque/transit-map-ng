@@ -123,7 +123,9 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 					//gjObj.features[0].geometry.coordinates.push(decodeSegment(s));
 					gjObj.features.push({type: 'Feature', geometry: {type:'LineString', coordinates: decodeSegment(s)}});
 				});
-				var gj = L.geoJson(gjObj);
+				var gj = L.geoJson(gjObj, {
+					style: {color: '#EB3D00', opacity: 0.80}
+				});
 				map.addLayer(gj);
 				map.fitBounds(gj.getBounds());
 			}
@@ -211,12 +213,12 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 				});
 				if (!$scope.stopsGj) {
 					$scope.stopsGj = new L.geoJson(gjObj, {onEachFeature: function (feature, layer) {
-						L.circle(layer.getLatLng(), 20, {opacity: 1, fillOpacity: 1, fillColor: 'blue', color: 'white', weight: 1}).bindLabel(feature.properties.stop_name, {noHide: false})
+						L.circle(layer.getLatLng(), 20, {opacity: 1, fillOpacity: 1, fillColor: '#FF0840', color: 'white', weight: 1}).bindLabel(feature.properties.stop_name, {noHide: false})
 						.on('mouseover', function (e) {
 							e.target.setStyle({fillColor: 'yellow'});
 						})
 						.on('mouseout', function (e) {
-							e.target.setStyle({fillColor: 'blue'});
+							e.target.setStyle({fillColor: '#FF0840'});
 						})
 						.addTo(map);
 					}});
@@ -230,10 +232,30 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 }).directive('transitSchedule', function () {
 	return {
 		restrict: 'E',
-		template: '<div id="schedule"><input class="transitInput" placeholder="Filter by stop name..." ng-model="transitSearch"></input><h4>Estimated Arrival Times</h4><em ng-show="vehicles.length === 0">No buses currently running on this route</em><div ng-repeat="vehicle in vehicles | orderBy: ' + "'call_name'" + '" ng-model="vehicle"><strong ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</strong><em ng-show="vehicle.arrival_estimates.length === 0">Bus not currently running</em><ul><li ng-class="{red: estimate.time <= 5, yellow: estimate.time <= 10 && estimate.time > 5}" ng-repeat="estimate in vehicle.arrival_estimates | filter:{stop_name: transitSearch} | filter: estimateFilter | orderBy: ' + "'time'" + '" ng-model="stop" ng-click="stopClick(estimate.location)" ng-mouseover="stopOver(estimate)" ng-mouseleave="stopLeave()">{{estimate.stop_name}} ({{estimate.minsec}})</li></ul></div></div>',
+		template: 
+		'<div id="schedule">'+
+			'<input class="transitInput" placeholder="Filter by stop name..." ng-model="transitSearch"></input>'+
+			'<h4>Estimated Arrival Times</h4>'+
+			'<select class="transitInput" ng-model="selectedTime" ng-init="selectedTime = selectedTime || times[1]" ng-options="time as time.label for time in times"></select>'+
+			'<br/><em ng-show="vehicles.length === 0">No buses currently running on this route</em>'+
+			'<div ng-repeat="vehicle in vehicles | orderBy: ' + "'call_name'" + '" ng-model="vehicle">'+
+				'<strong class="busHeader" ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</strong>'+
+				'<em ng-show="vehicle.arrival_estimates.length === 0">Bus not currently running</em>'+
+				'<ul class="busList"><li ng-class="{redBus: estimate.time <= 5, orangeBus: estimate.time <= 10 && estimate.time > 5}" '+
+					'ng-repeat="estimate in vehicle.arrival_estimates | filter:{stop_name: transitSearch} | filter: estimateFilter | orderBy: ' + "'time'" + '" '+
+					'ng-model="stop" ng-click="stopClick(estimate.location)" ng-mouseover="stopOver(estimate)" ng-mouseleave="stopLeave()">'+
+					'{{estimate.stop_name}} ({{estimate.minsec}})</li>'+
+				'</ul></div></div>',
 		controller: function ($scope, $rootScope, $location) {
 			$scope.transitSearch = "";
 			$scope.over = false;
+			$scope.times = [
+				{value: 10, label:'Arriving in under 10 minutes'},
+				{value: 20, label:'Arriving in under 20 minutes'},
+				{value: 30, label:'Arriving in under 30 minutes'},
+				{value: 40, label:'Arriving in under 40 minutes'},
+				{value: 50, label:'Arriving in under 50 minutes'},
+				{value: 60, label:'Arriving in under 60 minutes'}];
 			$scope.stopClick = function (location) {
 				$rootScope.map.setView([location.lat, location.lng], 16);
 			}
@@ -253,7 +275,7 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 				$scope.over = false;
 			};
 			$scope.estimateFilter = function (estimate) {
-		        return estimate.time <= 30 && estimate.time > 0.01;
+		        return estimate.time <= $scope.selectedTime.value && estimate.time > 0.01;
 		    };		
 		}
 	}

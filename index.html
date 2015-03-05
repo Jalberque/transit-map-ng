@@ -15,11 +15,11 @@
 	    	#schedule {
 	    		width: 100%;
 	    	}
-	    	.red {
-	    		color: red;
+	    	.redBus {
+	    		color: #FF0840;
 	    	}
-	    	.yellow {
-	    		color: orange;
+	    	.orangeBus {
+	    		color: #FF7521;
 	    	}
 			.transitInput {
 				display: block;
@@ -37,9 +37,15 @@
 				transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 				margin: 20px;
 			}	    	
+			.busList, .busHeader {
+				cursor: pointer;
+			}
+			.busList {
+				color: #839797;
+			}
 	    </style>
 	</head>
-	<body ng-app="transitMap" ng-init="route = '1'">
+	<body ng-app="transitMap" ng-init="route = '7'">
 
 		<transit-map level="12" center="[35.779, -78.6436]"></transit-map>
 		<transit-schedule></transit-schedule>
