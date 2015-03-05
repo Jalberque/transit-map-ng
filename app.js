@@ -1,13 +1,5 @@
 'use strict';
-angular.module('transitMap', {
-  setup: function() {
-    // setup for module name
-    
-  },
-  teardown: function() {
-    //teardown for module name
-  }
-}).factory('transLoc', function($http, $q, $filter){
+angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q, $filter){
 	var baseUrl = "https://transloc-api-1-2.p.mashape.com/";
 	var headers = {'X-Mashape-Key': 'QcvihLtHdgmshtY0Yjsg7nytW4Iqp1MEy05jsnSqvl1Lqjt9eW'};
 	var transLocFactory = {};
@@ -101,8 +93,6 @@ angular.module('transitMap', {
 			$rootScope.map = map;
 			initMap(map);
 			getRoute();
-
-
 			function initMap (map) {
 				var hour = new Date().getHours();
 				console.log(hour);
