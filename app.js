@@ -179,6 +179,7 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 							if (stop.length > 0) {
 								stop = stop[0];
 								a.stop_name = stop.name;
+								a.code = stop.code;
 								a.location = stop.location;
 								var diff = new Date(a.arrival_at) - new Date();
 								a.time = (diff/1000)/60;
@@ -242,9 +243,9 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 				'<strong class="busHeader" ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</strong>'+
 				'<em ng-show="vehicle.arrival_estimates.length === 0">Bus not currently running</em>'+
 				'<ul class="busList"><li ng-class="{redBus: estimate.time <= 5, orangeBus: estimate.time <= 10 && estimate.time > 5}" '+
-					'ng-repeat="estimate in vehicle.arrival_estimates | filter:{stop_name: transitSearch} | filter: estimateFilter | orderBy: ' + "'time'" + '" '+
+					'ng-repeat="estimate in vehicle.arrival_estimates | filter:stopFilter | filter: estimateFilter | orderBy: ' + "'time'" + '" '+
 					'ng-model="stop" ng-click="stopClick(estimate.location)" ng-mouseover="stopOver(estimate)" ng-mouseleave="stopLeave()">'+
-					'{{estimate.stop_name}} ({{estimate.minsec}})</li>'+
+					'{{estimate.code}} - {{estimate.stop_name}} ({{estimate.minsec}})</li>'+
 				'</ul></div></div>',
 		controller: function ($scope, $rootScope, $location) {
 			$scope.transitSearch = "";
@@ -277,6 +278,9 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 			$scope.estimateFilter = function (estimate) {
 		        return estimate.time <= $scope.selectedTime.value && estimate.time > 0.01;
 		    };		
+			$scope.stopFilter = function (estimate) {
+		        return estimate.code.indexOf($scope.transitSearch) > -1 || estimate.stop_name.toUpperCase().indexOf($scope.transitSearch.toUpperCase()) > -1;
+		    };				    
 		}
 	}
 });
