@@ -103,7 +103,7 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 					minZoom: 4,
 					maxZoom: 16
 				}).addTo(map).on('tileload', function (e) {
-					e.tile.setAttribute('alt', 'map tile');
+					e.tile.setAttribute('alt', '');
 				});
 				map.setView($scope.center, $scope.level);				
 			}
