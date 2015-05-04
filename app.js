@@ -102,7 +102,9 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 					subdomains: 'abcd',
 					minZoom: 4,
 					maxZoom: 16
-				}).addTo(map);
+				}).addTo(map).on('tileload', function (e) {
+					e.tile.setAttribute('alt', 'map tile');
+				});
 				map.setView($scope.center, $scope.level);				
 			}
 			function getRoute () {
