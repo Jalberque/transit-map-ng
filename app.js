@@ -238,8 +238,8 @@ angular.module('transitMap', ['ngTouch']).factory('transLoc', function($http, $q
 		template: 
 		'<div id="schedule">'+
 			'<input class="transitInput" placeholder="Filter by stop # or name..." ng-model="transitSearch"></input>'+
-			'<h4>Estimated Arrival Times</h4>'+
-			'<select class="transitInput" ng-model="selectedTime" ng-init="selectedTime = selectedTime || times[1]" ng-options="time as time.label for time in times"></select>'+
+			'<label for="arrivals"><h4>Estimated Arrival Times</h4></label>'+
+			'<select id="arrtivals" class="transitInput" ng-model="selectedTime" ng-init="selectedTime = selectedTime || times[1]" ng-options="time as time.label for time in times"></select>'+
 			'<br/><em ng-show="vehicles.length === 0">No buses currently running on this route</em>'+
 			'<div ng-repeat="vehicle in vehicles | orderBy: ' + "'call_name'" + '" ng-model="vehicle">'+
 				'<strong class="busHeader" ng-click="stopClick(vehicle.location)">Bus {{vehicle.call_name}}</strong>'+
